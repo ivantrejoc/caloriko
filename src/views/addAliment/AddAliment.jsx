@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View, ScrollView } from "react-native";
 import { Header } from "../../components/header";
 import { AddAlimentModal } from "../../components/addAlimentModal";
+import { AlimentItem } from "../../components/alimentItem";
 import { Button, Icon, Input } from "@rneui/themed";
 import { useStorage } from "../../hooks";
 
@@ -19,6 +20,21 @@ const AddAliment = () => {
       return error.message;
     }
   };
+
+  useEffect(() => {
+    const aliments = async () => {
+      try {
+        const getAliments = await getAlimentsList();
+        if (getAliments) {
+          setSavedAliments(getAliments);
+        }
+      } catch (error) {
+        console.error(error);
+        return error.message;
+      }
+    };
+    aliments();
+  }, []);
 
   const handleCloseModal = async (shouldUpadate) => {
     if (shouldUpadate) {
@@ -63,7 +79,16 @@ const AddAliment = () => {
       {visible && (
         <AddAlimentModal visible={visible} onClose={handleCloseModal} />
       )}
-      <View style={styles.alimentsContainer}></View>
+      <ScrollView style={styles.alimentsContainer}>
+        {savedAliments?.map((aliment) => (
+          <AlimentItem
+            key={aliment.name}
+            name={aliment.name}
+            calories={aliment.calories}
+            ration={aliment.ration}
+          />
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -109,5 +134,8 @@ const styles = StyleSheet.create({
     color: "#000000",
     fontSize: 14
   },
-  alimentsContainer: {}
+  alimentsContainer: {
+    flex: 1,
+    backgroundColor: "plum"
+  }
 });
