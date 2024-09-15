@@ -1,10 +1,113 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { useEffect, useState } from "react";
+import { Alert, StyleSheet, Text, View } from "react-native";
+import { Header } from "../../components/header";
+import { AddAlimentModal } from "../../components/addAlimentModal";
+import { Button, Icon, Input } from "@rneui/themed";
+import { useStorage } from "../../hooks";
+
 const AddAliment = () => {
+  const [visible, setVisible] = useState(false);
+  const [savedAliments, setSavedAliments] = useState([]);
+  const { onGetAliments } = useStorage();
+
+  const getAlimentsList = async () => {
+    try {
+      const alimentsList = await onGetAliments();
+      setSavedAliments(alimentsList);
+    } catch (error) {
+      console.error(error);
+      return error.message;
+    }
+  };
+
+  const handleCloseModal = async (shouldUpadate) => {
+    if (shouldUpadate) {
+      Alert.alert("Aliment saved");
+      getAlimentsList();
+    }
+    setVisible(false);
+  };
+
   return (
-    <View>
-      <Text>AddAliment</Text>
+    <View style={styles.container}>
+      <Header />
+      <View style={styles.actionsCont}>
+        <View style={styles.addAlimentCont}>
+          <View style={styles.leftCont}>
+            <Text style={styles.alimentLegend}>Add Aliment</Text>
+          </View>
+          <View style={styles.rightCont}>
+            <Button
+              radius={"lg"}
+              color="#4ECB71"
+              type="solid"
+              onPress={() => setVisible(true)}
+            >
+              <Icon name="add-circle-outline" color="#FFFFFF" />
+            </Button>
+          </View>
+        </View>
+        <View style={styles.searchCont}>
+          <View style={styles.leftSearchContainer}>
+            <Input placeholder="Apples, fries, soda..." />
+          </View>
+          <Button
+            radius={"lg"}
+            color="#ADE8AF"
+            type="solid"
+            title={"Search"}
+            titleStyle={styles.searchButtonTitle}
+          />
+        </View>
+      </View>
+      {visible && (
+        <AddAlimentModal visible={visible} onClose={handleCloseModal} />
+      )}
+      <View style={styles.alimentsContainer}></View>
     </View>
-  )
-}
-export default AddAliment
-const styles = StyleSheet.create({})
+  );
+};
+export default AddAliment;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 12,
+    backgroundColor: "#FFFFFF"
+  },
+  actionsCont: {
+    marginVertical: 24
+  },
+  addAlimentCont: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 10
+  },
+  leftCont: {
+    flex: 1,
+    alignItems: "flex-start",
+    justifyContent: "center"
+  },
+  alimentLegend: {
+    fontSize: 22
+  },
+  rightCont: {
+    flex: 1,
+    alignItems: "flex-end",
+    justifyContent: "center"
+  },
+  searchCont: {
+    flexDirection: "row",
+    paddingHorizontal: 0,
+    marginVertical: 12
+  },
+  leftSearchContainer: {
+    flex: 1,
+    justifyContent: "center",
+    marginLeft: -12
+  },
+  searchButtonTitle: {
+    color: "#000000",
+    fontSize: 14
+  },
+  alimentsContainer: {}
+});

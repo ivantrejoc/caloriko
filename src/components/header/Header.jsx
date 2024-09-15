@@ -1,9 +1,20 @@
 import { StyleSheet, Text, View, Image } from "react-native";
+import { Button, Icon } from "@rneui/themed";
 import { userInfo } from "../../utils";
+import { useNavigation } from "@react-navigation/native";
 
 const Header = () => {
+  const { canGoBack, goBack } = useNavigation();
+
   return (
     <View style={styles.container}>
+      {canGoBack() ? (
+        <View style={styles.arrowContainer}>
+          <Button type="clear" onPress={() => goBack()}>
+            <Icon name="arrow-back" size={24} />
+          </Button>
+        </View>
+      ) : undefined}
       <View style={styles.leftCont}>
         <Text style={styles.name}>{`Hello, ${userInfo.name}`}</Text>
         <Text style={styles.welcome}>Welcome back to your goal! </Text>
@@ -39,5 +50,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 25
-  }
+  },
+  arrowContainer: {}
 });
