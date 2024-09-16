@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Header } from "../../components/header";
 import { Button, Icon } from "@rneui/themed";
@@ -11,12 +11,29 @@ const Home = () => {
   const { navigate } = useNavigation();
   const { onGetTodaysAliment } = useStorage();
 
+  const totalCalories = 2000;
+
+  const consumedCalories = useMemo(() => {
+    return dailyMeals.reduce((accum, curr) => {
+      return accum + Number(curr.calories);
+    }, 0);
+  }, [dailyMeals]);
+
+  const remainingCalories = useMemo(() => {
+    const result = totalCalories - consumedCalories;
+    return result;
+  }, [totalCalories, consumedCalories]);
+
+  const percentage = useMemo(() => {
+    const result = (consumedCalories / totalCalories) * 100;
+    return result;
+  }, [consumedCalories, totalCalories]);
+
   useFocusEffect(
     useCallback(() => {
       const getDailyMeals = async () => {
         try {
           const dailyMealsList = await onGetTodaysAliment();
-          console.log("MEAL LIST FROM STORAGE: ", dailyMealsList);
           if (dailyMealsList) {
             setDailyMeals(dailyMealsList);
           }
@@ -28,11 +45,11 @@ const Home = () => {
       getDailyMeals();
     }, [])
   );
-  console.log("DAILY MEALS: ", dailyMeals);
 
   const handleAddCalories = () => {
     navigate("AddAliment");
   };
+
   return (
     <View style={styles.container}>
       <Header />
@@ -50,7 +67,7 @@ const Home = () => {
           </Button>
         </View>
       </View>
-      <TodayCalories />
+      <TodayCalories totalCalories={totalCalories} consumedCalories={consumedCalories} remainingCalories={remainingCalories} percentage={percentage} />
     </View>
   );
 };

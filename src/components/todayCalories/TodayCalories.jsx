@@ -1,17 +1,17 @@
 import { StyleSheet, Text, View } from "react-native";
 import CircularProgress from "react-native-circular-progress-indicator";
+
+
 const TodayCalories = ({
-  totalCalories = 2000,
-  consumedCalories = 2000,
-  remainingCalories = 2000,
-  percentage = 45
+  totalCalories,
+  consumedCalories,
+  remainingCalories,
+  percentage
 }) => {
   return (
     <View style={styles.container}>
       <View style={styles.leftCont}>
-        <CircularProgress value={percentage}  valueSuffix={"%"}
-        rotation={0}
-         />
+        <CircularProgress value={percentage} valueSuffix={"%"} rotation={0} />
       </View>
       <View style={styles.rightCont}>
         <Text style={styles.title}>Today</Text>
