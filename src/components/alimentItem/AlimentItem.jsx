@@ -1,6 +1,19 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button, Icon } from "@rneui/themed";
+import { useStorage } from "../../hooks";
+
 const AlimentItem = ({ calories, name, ration }) => {
+  const { onSaveTodayAliment } = useStorage();
+  const handleAddItem = async () => {
+    try {
+      await onSaveTodayAliment({ calories, name, ration });
+      Alert.alert("Aliment added for today");
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Something goes wrong. ", error.message);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.leftCont}>
@@ -8,7 +21,7 @@ const AlimentItem = ({ calories, name, ration }) => {
         <Text style={styles.ration}>{ration}</Text>
       </View>
       <View style={styles.rightCont}>
-        <Button type="clear" style={styles.iconButton}>
+        <Button type="clear" style={styles.iconButton} onPress={handleAddItem}>
           <Icon name="add-circle-outline" />
         </Button>
         <Text style={styles.calories}>{calories} Kcal</Text>

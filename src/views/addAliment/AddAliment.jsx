@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   alimentsContainer: {
-    flex: 1,
-    backgroundColor: "plum"
+    flex: 1
   }
 });
