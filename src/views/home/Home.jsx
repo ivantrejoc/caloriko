@@ -1,10 +1,35 @@
+import { useCallback, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Header } from "../../components/header";
 import { Button, Icon } from "@rneui/themed";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+
+import { useStorage } from "../../hooks";
 
 const Home = () => {
+  const [dailyMeals, setDailyMeals] = useState([]);
   const { navigate } = useNavigation();
+  const { onGetTodaysAliment } = useStorage();
+
+  useFocusEffect(
+    useCallback(() => {
+      const getDailyMeals = async () => {
+        try {
+          const dailyMealsList = await onGetTodaysAliment();
+          console.log("MEAL LIST FROM STORAGE: ", dailyMealsList);
+          if (dailyMealsList) {
+            setDailyMeals(dailyMealsList);
+          }
+        } catch (error) {
+          console.error(error);
+          return error.message;
+        }
+      };
+      getDailyMeals();
+    }, [])
+  );
+  console.log("DAILY MEALS: ", dailyMeals);
+
   const handleAddCalories = () => {
     navigate("AddAliment");
   };
