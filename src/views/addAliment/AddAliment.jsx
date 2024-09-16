@@ -9,17 +9,8 @@ import { useStorage } from "../../hooks";
 const AddAliment = () => {
   const [visible, setVisible] = useState(false);
   const [savedAliments, setSavedAliments] = useState([]);
+  const [search, setSearch] = useState("");
   const { onGetAliments } = useStorage();
-
-  const getAlimentsList = async () => {
-    try {
-      const alimentsList = await onGetAliments();
-      setSavedAliments(alimentsList);
-    } catch (error) {
-      console.error(error);
-      return error.message;
-    }
-  };
 
   useEffect(() => {
     const aliments = async () => {
@@ -36,12 +27,36 @@ const AddAliment = () => {
     aliments();
   }, []);
 
+  const getAlimentsList = async () => {
+    try {
+      const alimentsList = await onGetAliments();
+      setSavedAliments(alimentsList);
+    } catch (error) {
+      console.error(error);
+      return error.message;
+    }
+  };
+
   const handleCloseModal = async (shouldUpadate) => {
     if (shouldUpadate) {
       Alert.alert("Aliment saved");
       getAlimentsList();
     }
     setVisible(false);
+  };
+
+  const handleSearch = async () => {
+    try {
+      const lowerCaseSearch = search.toLowerCase();
+      const allAliments = await onGetAliments();
+      const filteredAliments = await allAliments.filter((aliment) =>
+        aliment.name.toLowerCase().includes(lowerCaseSearch)
+      );
+      setSavedAliments(filteredAliments);
+    } catch (error) {
+      console.error(error);
+      return error.message;
+    }
   };
 
   return (
@@ -65,7 +80,11 @@ const AddAliment = () => {
         </View>
         <View style={styles.searchCont}>
           <View style={styles.leftSearchContainer}>
-            <Input placeholder="Apples, fries, soda..." />
+            <Input
+              placeholder="Apples, fries, soda..."
+              value={search}
+              onChangeText={(text) => setSearch(text)}
+            />
           </View>
           <Button
             radius={"lg"}
@@ -73,6 +92,7 @@ const AddAliment = () => {
             type="solid"
             title={"Search"}
             titleStyle={styles.searchButtonTitle}
+            onPress={handleSearch}
           />
         </View>
       </View>
