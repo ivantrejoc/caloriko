@@ -7,7 +7,7 @@ const AlimentItem = ({ calories, name, ration }) => {
   const handleAddItem = async () => {
     try {
       await onSaveTodayAliment({ calories, name, ration });
-      Alert.alert("Aliment added for today");
+      Alert.alert("Aliment added to today");
     } catch (error) {
       console.error(error);
       Alert.alert("Something goes wrong. ", error.message);

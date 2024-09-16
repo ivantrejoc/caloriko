@@ -2,8 +2,8 @@ import { useCallback, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Header } from "../../components/header";
 import { Button, Icon } from "@rneui/themed";
+import { TodayCalories } from "../../components/todayCalories";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-
 import { useStorage } from "../../hooks";
 
 const Home = () => {
@@ -50,6 +50,7 @@ const Home = () => {
           </Button>
         </View>
       </View>
+      <TodayCalories />
     </View>
   );
 };

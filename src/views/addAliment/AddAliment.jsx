@@ -100,14 +100,15 @@ const AddAliment = () => {
         <AddAlimentModal visible={visible} onClose={handleCloseModal} />
       )}
       <ScrollView style={styles.alimentsContainer}>
-        {savedAliments?.map((aliment) => (
-          <AlimentItem
-            key={aliment.name}
-            name={aliment.name}
-            calories={aliment.calories}
-            ration={aliment.ration}
-          />
-        ))}
+        {savedAliments.length > 0 &&
+          savedAliments?.map((aliment) => (
+            <AlimentItem
+              key={aliment.name}
+              name={aliment.name}
+              calories={aliment.calories}
+              ration={aliment.ration}
+            />
+          ))}
       </ScrollView>
     </View>
   );
