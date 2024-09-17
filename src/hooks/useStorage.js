@@ -87,11 +87,29 @@ const useStorage = () => {
     }
   };
 
+  const removeTodayAliment = async (index) => {
+    try {
+      const todayAliments = await getTodaysAliments();
+      const filteredItem = todayAliments.filter((item, itemIndex) => {
+        return itemIndex !== index;
+      });
+      await AsyncStorage.setItem(
+        MY_TODAY_ALIMENT_KEY,
+        JSON.stringify(filteredItem)
+      );
+      return "Aliment removed!";
+    } catch (error) {
+      console.error(error);
+      return error.message;
+    }
+  };
+
   return {
     onSaveAliment: saveAliment,
     onGetAliments: getAliments,
     onSaveTodayAliment: saveTodayAliment,
-    onGetTodaysAliment: getTodaysAliments
+    onGetTodaysAliment: getTodaysAliments,
+    onRemoveTodayAliment: removeTodayAliment
   };
 };
 export default useStorage;

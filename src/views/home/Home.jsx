@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Header } from "../../components/header";
 import { Button, Icon } from "@rneui/themed";
 import { TodayCalories } from "../../components/todayCalories";
+import { TodayAliments } from "../../components/todayAliments";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useStorage } from "../../hooks";
 
@@ -10,6 +11,18 @@ const Home = () => {
   const [dailyMeals, setDailyMeals] = useState([]);
   const { navigate } = useNavigation();
   const { onGetTodaysAliment } = useStorage();
+
+  const getDailyMeals = async () => {
+    try {
+      const dailyMealsList = await onGetTodaysAliment();
+      if (dailyMealsList) {
+        setDailyMeals(dailyMealsList);
+      }
+    } catch (error) {
+      console.error(error);
+      return error.message;
+    }
+  };
 
   const totalCalories = 2000;
 
@@ -31,17 +44,6 @@ const Home = () => {
 
   useFocusEffect(
     useCallback(() => {
-      const getDailyMeals = async () => {
-        try {
-          const dailyMealsList = await onGetTodaysAliment();
-          if (dailyMealsList) {
-            setDailyMeals(dailyMealsList);
-          }
-        } catch (error) {
-          console.error(error);
-          return error.message;
-        }
-      };
       getDailyMeals();
     }, [])
   );
@@ -67,7 +69,13 @@ const Home = () => {
           </Button>
         </View>
       </View>
-      <TodayCalories totalCalories={totalCalories} consumedCalories={consumedCalories} remainingCalories={remainingCalories} percentage={percentage} />
+      <TodayCalories
+        totalCalories={totalCalories}
+        consumedCalories={consumedCalories}
+        remainingCalories={remainingCalories}
+        percentage={percentage}
+      />
+      <TodayAliments dailyMeals={dailyMeals} onGetDailyMeals={() => getDailyMeals()} />
     </View>
   );
 };

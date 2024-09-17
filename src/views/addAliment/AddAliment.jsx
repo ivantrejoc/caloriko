@@ -107,6 +107,7 @@ const AddAliment = () => {
               name={aliment.name}
               calories={aliment.calories}
               ration={aliment.ration}
+              ableToAdd
             />
           ))}
       </ScrollView>

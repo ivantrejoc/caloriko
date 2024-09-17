@@ -2,12 +2,28 @@ import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button, Icon } from "@rneui/themed";
 import { useStorage } from "../../hooks";
 
-const AlimentItem = ({ calories, name, ration }) => {
-  const { onSaveTodayAliment } = useStorage();
-  const handleAddItem = async () => {
+const AlimentItem = ({
+  calories,
+  name,
+  ration,
+  itemIndex,
+  ableToAdd,
+  onGetDailyMeals
+}) => {
+  const { onSaveTodayAliment, onRemoveTodayAliment } = useStorage();
+
+  const handleIconPress = async () => {
     try {
-      await onSaveTodayAliment({ calories, name, ration });
-      Alert.alert("Aliment added to today");
+      if (ableToAdd) {
+        await onSaveTodayAliment({ calories, name, ration });
+        Alert.alert("Aliment added to today");
+      } else {
+        await onRemoveTodayAliment(itemIndex);
+        Alert.alert("Aliment removed");
+        if (onGetDailyMeals) {
+          onGetDailyMeals();
+        }
+      }
     } catch (error) {
       console.error(error);
       Alert.alert("Something goes wrong. ", error.message);
@@ -21,8 +37,12 @@ const AlimentItem = ({ calories, name, ration }) => {
         <Text style={styles.ration}>{ration}</Text>
       </View>
       <View style={styles.rightCont}>
-        <Button type="clear" style={styles.iconButton} onPress={handleAddItem}>
-          <Icon name="add-circle-outline" />
+        <Button
+          type="clear"
+          style={styles.iconButton}
+          onPress={handleIconPress}
+        >
+          <Icon name={ableToAdd ? "add-circle-outline" : "close"} />
         </Button>
         <Text style={styles.calories}>{calories} Kcal</Text>
       </View>
